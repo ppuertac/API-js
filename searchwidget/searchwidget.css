@@ -16,13 +16,16 @@ body {
     height: 100%;
 }
 
-#cpLeading {
-    width: 117px;
+#divSearch {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: 25px;
+    left: 75px;
 }
 
-#BasemapToggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 50;
+#cpHeader {
+    height: auto;
 }
+
+
