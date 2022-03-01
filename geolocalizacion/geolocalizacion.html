@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Edit Features</title>
+
+        <!-- Configure dojo for asynchronous module loading -->
+        <script>
+            var dojoConfig = {
+                async: true
+            };
+        </script>
+
+        <!-- Reference libraries. The first CSS is a Dojo theme that gives dijits a consistent style. -->
+        <link rel="stylesheet" href="http://js.arcgis.com/3.18/dijit/themes/nihilo/nihilo.css">
+        <link rel="stylesheet" href="http://js.arcgis.com/3.18/esri/css/esri.css">
+        <link rel="stylesheet" href="geolocalizacion.css"/>
+        <script src="http://js.arcgis.com/3.18/"></script>
+        <script src="geolocalizacion.js"></script>
+    </head>
+
+    <body></body>
+        <div id="mainContenedor">
+            <input id="input1">
+            <input id="input2">
+        </div>
+        <button id="boton">Buscar</button>
+        <div id="cpCenter"> </div>
+    </body>
+
+</html>

@@ -64,7 +64,7 @@ require([
 
                 // marker symbol for drawing viewpoint
                 var smsViewpoint = new SimpleMarkerSymbol();
-                smsViewpoint.setSize(12);
+                smsViewpoint.setSize(5);
                 smsViewpoint.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 255]), 1));
                 smsViewpoint.setColor(new Color([0, 0, 0]));
 

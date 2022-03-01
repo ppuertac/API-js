@@ -1,0 +1,121 @@
+var mapMain;
+var widgetEditor;
+
+// @formatter:off
+require([
+        "esri/map",
+        "esri/layers/FeatureLayer",
+        "esri/config",
+        "esri/tasks/GeometryService",
+        "esri/dijit/editing/TemplatePicker",
+        "esri/dijit/editing/Editor",
+
+        "dojo/ready",
+        "dojo/parser",
+        "dojo/on",
+        "dojo/_base/array",
+
+        "dijit/layout/BorderContainer",
+        "dijit/layout/ContentPane"],
+    function (Map, FeatureLayer, config, GeometryService, TemplatePicker, Editor,
+              ready, parser, on, array,
+              BorderContainer, ContentPane) {
+// @formatter:on
+
+        // Wait until DOM is ready *and* all outstanding require() calls have been resolved
+        ready(function () {
+
+            // Parse DOM nodes decorated with the data-dojo-type attribute
+            parser.parse();
+
+            /*
+             * Step: Specify the proxy Url
+             */
+            config.defaults.io.proxyUrl = "http://localhost/proxy/proxy.ashx";
+             
+            
+            // Create the map
+            mapMain = new Map("cpCenter", {
+                basemap: "topo",
+                center: [-116.64, 34.37],
+                zoom: 10
+            });
+
+            var flFirePoints, flFireLines, flFirePolygons;
+            /*
+             * Step: Construct the editable layers
+             */
+            var flFirePoints = new FeatureLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0");
+            var flFireLines = new FeatureLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/1");
+            var flFirePolygons = new FeatureLayer("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/2");
+
+
+            // Listen for the editable layers to finish loading
+            mapMain.on("layers-add-result", initEditor);
+
+            // add the editable layers to the map
+            mapMain.addLayers([flFirePolygons, flFireLines, flFirePoints]);
+
+            function initEditor(results) {
+
+                // Map the event results into an array of layerInfo objects
+                var layerInfosWildfire = array.map(results.layers, function (result) {
+                    return {
+                        featureLayer: result.layer
+                    };
+                });
+
+                /*
+                 * Step: Map the event results into an array of Layer objects
+                 */
+                var layersObjects = array.map(results.layers, function (result){return result.layer});
+
+
+                /*
+                 * Step: Add a custom TemplatePicker widget
+                 */
+                var templateWidget = new TemplatePicker({
+                    featureLayers: layersObjects,
+                    columns: 2
+                }, "divLeft");
+                templateWidget.startup();
+
+                /*
+                 * Step: Prepare the Editor widget settings
+                 */
+                var editorSettings = {
+                    map: mapMain,
+                    geometryService: new GeometryService("http://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer"),
+                    layerInfos: layerInfosWildfire,
+                    toolbarVisible: true,
+                    templatePicker: templateWidget,
+                    createOptions: {
+                        polygonDrawTools: 
+                            [Editor.CREATE_TOOL_FREEHAND_POLYGON, 
+                            Editor.CREATE_TOOL_RECTANGLE, 
+                            Editor.CREATE_TOOL_TRIANGLE, 
+                            Editor.CREATE_TOOL_CIRCLE]},
+                    toolbarOptions: {
+                        reshapeVisible: true
+                    },
+                    enableUndoRedo: true,
+                    maxUndoRedoOperations : 20
+                }
+            
+
+                /*
+                 * Step: Build the Editor constructor's first parameter
+                 */
+                var params = {
+                    settings: editorSettings
+                }
+
+                /*
+                 * Step: Construct the Editor widget
+                 */
+                var editorWidget = new Editor(params, "divTop");
+                editorWidget.startup();
+            };
+
+        });
+    });
