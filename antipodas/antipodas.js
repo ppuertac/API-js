@@ -73,7 +73,7 @@ require([
                 //Creamos las antípodas
                 var centerLatLong = webMercatorUtils.xyToLngLat(evt.mapPoint.x, evt.mapPoint.y);
 
-                var latitud = -centerLatLong[1];
+                var latitud = - centerLatLong[1];
 
                 var longitud;
                 if (centerLatLong[0] < 0){
@@ -94,7 +94,6 @@ require([
 
                 var symbol2 = new SimpleMarkerSymbol();
                 symbol2.setSize(12);
-                symbol2.setOutline(new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([255, 255, 0, 0.5]), 1));
                 symbol2.setColor(new Color([255, 127, 0, 0.5]));
 
                 var graphicpoint = new Graphic(punto2, symbol2);
