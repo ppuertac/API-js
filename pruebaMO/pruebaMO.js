@@ -17,6 +17,7 @@ require(["esri/map",
     "dojo/_base/Color",
     "esri/graphic",
     "esri/tasks/query",
+    "esri/graphicsUtils",
 
     "dojo/on",
 
@@ -28,7 +29,7 @@ require(["esri/map",
 
   function (
     Map, Extent, ArcGISDynamicMapServiceLayer, FeatureLayer, BasemapGallery, Legend, Search, OverviewMap, Scalebar, PopupTemplate,
-    Draw, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, Graphic, Query,
+    Draw, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, Graphic, Query, graphicsUtils,
     on, TitlePane, TabContainer, ContentPane, BorderContainer, domReady
   ) {
 
@@ -74,12 +75,37 @@ require(["esri/map",
     }
 
 
-    //Para ir al estado (SIN TERMINAR)
+    //Para ir al estado:
     on(dojo.byId("progButtonNode"), "click", fQueryEstados);
 
-    function fQueryEstados() {
-      alert("Evento del botón Ir a estado");
-    }
+        function fQueryEstados() {
+          // Guardamos el valor del input
+          var inputState = dojo.byId("dtb").value;
+
+          // Definimos una simbología para los estados seleccionados
+          var sbState = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+            new Color([255,0,0]), 2),new Color([255,255,0,0.5])
+          );
+
+          // Aplicamos la simbología a los estados seleccionados
+          estados.setSelectionSymbol(sbState);
+
+          // Definimos la consulta
+          var queryState = new Query();
+          queryState.where = `state_name = '${inputState}'`;
+          estados.selectFeatures(
+            queryState, // Aplicamos la clausula Where de la consulta
+            FeatureLayer.SELECTION_NEW, // Marcamos como nueva selección
+            function(selection) { // Función para hacer zoom al estado
+              var centerSt = graphicsUtils.graphicsExtent(selection).getCenter();
+              var extentSt = esri.graphicsExtent(selection);
+
+              mapa.setExtent(extentSt.getExtent().expand(2));
+              mapa.centerAt(centerSt);
+          });
+        };
+
 
 
     //Crear mapa y widgets
